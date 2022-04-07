@@ -1,2 +1,3 @@
-pkg
-src go*.zst
+pkg/
+src/
+go*.zst
