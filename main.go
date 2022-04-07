@@ -1,12 +1,12 @@
 package main
 
 import (
-	//"os"
 	"fmt"
 	"github.com/anaskhan96/soup"
+	"time"
 )
 
-func main () {
+func scrape () {
 	URL := "https://economictimes.indiatimes.com/markets"
 
 	html, err := soup.Get(URL)
@@ -24,4 +24,16 @@ func main () {
 	fmt.Println("Status: ", STATUS)
 	fmt.Println("Sensex: ", SENSEX_DIFF )
 	fmt.Println("Nifty: ", NIFTY_DIFF)
+}
+
+func main () {
+    for {
+    scrape()
+
+    time.Sleep(60 * time.Second)
+
+    for j := 0; j < 3; j++ {
+        fmt.Print("\033[1A\033[K")
+    }
+    }
 }
