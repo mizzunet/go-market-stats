@@ -1,7 +1,7 @@
 package main
 
 import (
-	"os"
+	//"os"
 	"fmt"
 	"github.com/anaskhan96/soup"
 )
@@ -11,7 +11,7 @@ func main () {
 
 	html, err := soup.Get(URL)
 	if err != nil {
-    		os.Exit(1)
+    		panic(err)
 	}
 
 	DOC 		:= soup.HTMLParse(html)
