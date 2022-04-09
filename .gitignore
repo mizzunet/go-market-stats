@@ -1,3 +1,5 @@
 pkg/
 src/
 go*.zst
+src/
+cache/
