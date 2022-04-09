@@ -1,39 +1,32 @@
 package main
-
 import (
 	"fmt"
-	"github.com/anaskhan96/soup"
-	"time"
+	"github.com/gocolly/colly/v2"
 )
 
-func scrape () {
-	URL := "https://economictimes.indiatimes.com/markets"
-
-	html, err := soup.Get(URL)
-	if err != nil {
-    		panic(err)
-	}
-
-	DOC 		:= soup.HTMLParse(html)
-	STATUS 		:= DOC.Find("span", "class", "mktStatus").Text()
-	//TIME 		:= DOC.Find("span", "class", "date_format active").Text()
-	INDICES 	:= DOC.Find("div", "class", "indices")
-	SENSEX_DIFF 	:= INDICES.Find("div", "data-pos", "1").Find("span", "class", "change").Text()
-	NIFTY_DIFF 	:= INDICES.Find("div", "data-pos", "2").Find("span", "class", "change").Text()
-
-	fmt.Println("Status: ", STATUS)
-	fmt.Println("Sensex: ", SENSEX_DIFF )
-	fmt.Println("Nifty: ", NIFTY_DIFF)
+type info struct {
+	status 	string
+	sensex 	string
+	nifty	string
 }
 
-func main () {
-    for {
-    scrape()
+func main() {
+	link := "https://economictimes.indiatimes.com/markets"
+	c := colly.NewCollector(
+		colly.CacheDir("./cache"),
+	)
+	
+	c.OnHTML("div.content_area",func(e *colly.HTMLElement) {
+		i	:= info {
+			status:	e.DOM.Find("span.mktStatus").Text(),
+			sensex: e.DOM.Find("div[data-pos='1']").Find("span.change").Text(),
+			nifty:	e.DOM.Find("div[data-pos='2']").Find("span.change").Text(),
+		}
 
-    time.Sleep(60 * time.Second)
-
-    for j := 0; j < 3; j++ {
-        fmt.Print("\033[1A\033[K")
-    }
-    }
+		fmt.Println("Status: ", i.status)
+		fmt.Println("SENSEX: ", i.sensex)
+		fmt.Println("NIFTY: ", 	i.nifty)
+	})
+	
+	c.Visit(link)
 }
